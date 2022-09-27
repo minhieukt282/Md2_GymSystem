@@ -31,13 +31,13 @@ let ioFile_3 = new ReadWriteFile(url_3)
 // manager.addAccount(user3)
 // manager.addAccount(user4)
 // manager.addAccount(user5)
-let user1 = new Client(5, "userOne","1",1)
-let user2 = new Client(6, "userTwo","1",1,"Chi Hoa", 41)
-let user3 = new Client(7, "userThree","1",1, "", 35)
+let user1 = new Client(5, "userOne", "1", 1)
+let user2 = new Client(6, "userTwo", "1", 1, "Chi Hoa", 41)
+let user3 = new Client(7, "userThree", "1", 1, "", 35)
 
-let admin1 = new ClientManage(8, "Admin_One","1",2)
-let admin2 = new ClientManage(9, "Admin_Two","1",2,"Lan", 45)
-let admin3 = new ClientManage(10, "Admin_Three","1",2, "", 25)
+let admin1 = new ClientManage(8, "ad", "1", 2, "Nhi", 30)
+let admin2 = new ClientManage(9, "Admin_Two", "1", 2, "Lan", 45)
+let admin3 = new ClientManage(10, "Admin_Three", "1", 2, "Ba", 25)
 manager.addClientToListMember(user1)
 manager.addClientToListMember(user2)
 manager.addClientToListMember(user3)
@@ -45,24 +45,28 @@ manager.addStaff(admin1)
 manager.addStaff(admin2)
 manager.addStaff(admin3)
 
+let indexStaff: number
 
-// let data_1 = manager.listMemberToString()
-let data_2 = manager.listStaffToString()
-// ioFile_2.writeFile(data_1)
-ioFile_3.writeFile(data_2)
-
+function writeData(){
+    let dataListAccount = manager.listAccountToString()
+    let dataListMember = manager.listMemberToString()
+    let dataListStaff = manager.listStaffToString()
+    ioFile.writeFile(dataListAccount)
+    ioFile_2.writeFile(dataListMember)
+    ioFile_3.writeFile(dataListStaff)
+}
 
 function readData() {
     arrayData_1 = ioFile.readFile().split(",")
     arrayData_2 = ioFile_2.readFile().split(",")
     arrayData_3 = ioFile_3.readFile().split(",")
-    // console.log(manager.readDataListAccount(arrayData_1))
-    console.log("---------------------")
-    // console.log(manager.readDataListMember(arrayData_2))
-    console.log(manager.readDataListStaff(arrayData_3))
+    manager.readDataListAccount(arrayData_1)
+    manager.readDataListMember(arrayData_2)
+    manager.readDataListStaff(arrayData_3)
 }
-
+writeData()
 readData()
+
 // init()
 
 function init() {
@@ -93,7 +97,15 @@ function login() {
     let userName = input.question("UserName: ")
     let passWord = input.question("PassWord: ")
     if (manager.checkAccount(userName, passWord)) {
-        startStaff()
+        if (manager.checkKey(userName, passWord) == MANAGER) {
+
+            startManage()
+        } else if (manager.checkKey(userName, passWord) == STAFF) {
+            indexStaff = manager.findIndexByAccount(userName, passWord)
+            startStaff()
+        } else {
+            startClient()
+        }
     } else {
         console.log("Username or password is incorrect. Please try again")
         do {
@@ -136,14 +148,7 @@ function register() {
                 mainUser = new ClientManage(id, userName, passWord, key)
                 manager.addStaff(mainUser)
             }
-            let data_1 = manager.listAccountToString()
-            let data_2 = manager.listMemberToString()
-            let data_3 = "null"
-            ioFile.writeFile(data_1)
-            ioFile_2.writeFile(data_2)
-            ioFile_3.writeFile(data_3)
-            // console.log(manager.displayStaff())
-            // console.log(manager.displayListMember())
+            writeData()
             login()
         }
     }
@@ -250,7 +255,6 @@ function myDiet() {
 function contactPT() {
     let choice: number
     let info = `-----CONTACT MY PERSONAL TRAINER-----
-
     0. Back to menu`
     console.log(info)
     do {
@@ -301,7 +305,7 @@ function showListClient() {
     3. Delete client
     0. Back to menu`
     console.log(info)
-
+    console.log(manager.listStaffs[indexStaff].listClient)
     do {
         choice = +input.question("Your select: ")
         switch (choice) {
@@ -338,7 +342,8 @@ function updateProfile() {
 }
 
 //----------------------------------------
-// startManage()
+startManage()
+
 function startManage() {
     let choice: number
     let info = `-----WELCOME MANAGER-----
@@ -359,47 +364,104 @@ function startManage() {
                 init()
                 break
         }
-    } while (choice != -1)
+    } while (choice == -1)
 }
 
 function displayStaff() {
+    // readData()
     let choice: number
-    let info = `-----Staff and Client-----
-    1. Add Staff
+    let info = `-----STAFF AND MEMBER-----
+    1. Add Member to Staff
     2. Delete Staff
-    3. Delete Client
+    3. Delete Client from Staff
+    4. Delete Client
     0. Back to menu`
     console.log(info)
+    console.log(">>>>>List staff<<<<<")
     console.log(manager.displayStaff())
+    console.log(">>>>>List member<<<<<")
     console.log(manager.displayListMember())
     do {
         choice = +input.question("Your select: ")
         switch (choice) {
             case 1:
-                addStaff()
+                addMemberToStaff()
                 break
             case 2:
                 deleteStaff()
                 break
             case 3:
+                deleteClientFromStaff()
+                break
+            case 4:
                 deleteClient()
                 break
             case 0:
                 startManage()
                 break
         }
-    } while (choice != -1)
+    } while (choice == -1)
 }
 
-function addStaff() {
-
+function addMemberToStaff() {
+    // readData()
+    let choice: number
+    let info = `-----ADD MEMBER TO STAFF-----
+    1. Continue
+    0. Back to menu`
+    console.log(info)
+    let idMember = +input.question("Input Id member: ")
+    let idStaff = +input.question("Input Id staff: ")
+    console.log(manager.addMemberToStaff(idMember, idStaff))
+    do {
+        choice = +input.question("Your select: ")
+        switch (choice) {
+            case 1:
+                addMemberToStaff()
+                break
+            case 0:
+                displayStaff()
+                break
+        }
+    } while (choice == -1)
 }
 
 function deleteStaff() {
 
 }
 
-function deleteClient() {
+function deleteClientFromStaff() {
+    let choice: number
+    let info = `-----DELETE MEMBER FROM STAFF-----
+    0. Back to menu`
+    console.log(info)
+    let idMember = +input.question("Input Id member delete: ")
+    let idStaff = +input.question("Input Id staff: ")
+    console.log(manager.deleteMemberFromListStaff(idMember, idStaff))
+    do {
+        choice = +input.question("Your select: ")
+        switch (choice) {
+            case 0:
+                displayStaff()
+                break
+        }
+    } while (choice == -1)
+}
 
+function deleteClient() {
+    let choice: number
+    let info = `-----DELETE MEMBER-----
+    0. Back to menu`
+    console.log(info)
+    let id = +input.question("Input Id delete: ")
+    console.log(manager.deleteMemberFromListMember(id))
+    do {
+        choice = +input.question("Your select: ")
+        switch (choice) {
+            case 0:
+                displayStaff()
+                break
+        }
+    } while (choice == -1)
 }
 

@@ -1,6 +1,7 @@
 import {ClientManage} from "./clientManage";
 import {Client} from "../service/client";
 import {AccountManage} from "./accountManage";
+import it from "node:test";
 
 export class StaffManage extends AccountManage {
     listStaffs: ClientManage[] = []
@@ -24,14 +25,14 @@ export class StaffManage extends AccountManage {
 
     listStaffToString(): string {
         let data: string = ""
-        this.listStaffs.forEach((item , index)=> {
-            if (item.name == undefined || item.name == "") item.name = "undefined"
-            if (item.age == undefined || item.age == "") item.age = "undefined"
-            data += `${item.id},${item.userName},${item.passWord},${item.key},${item.name},${item.age},
-`
+        this.listStaffs.forEach((item) => {
+            if (item.name == undefined || item.name == "") item.name = "NaN"
+            if (item.age == undefined || item.age == "") item.age = "NaN"
+            data += `${item.id},${item.userName},${item.passWord},${item.key},${item.name},${item.age},\n`
         })
         return data
     }
+
     readDataListMember(arrData: any): any {
         let tempArray: Client[] = []
         for (let i = 0; i < arrData.length - 1; i += 8) {
@@ -53,12 +54,11 @@ export class StaffManage extends AccountManage {
     listMemberToString(): string {
         let data: string = ""
         this.listMember.forEach(item => {
-            if (item.name == undefined || item.name == "") item.name = "undefined"
-            if (item.age == undefined || item.age == "") item.age = "undefined"
-            if (item.height == undefined || item.height == "") item.height = "undefined"
-            if (item.weight == undefined || item.weight == "") item.weight = "undefined"
-            data += `${item.id},${item.userName},${item.passWord},${item.key},${item.name},${item.age},${item.height},${item.weight},
-`
+            if (item.name == undefined || item.name == "") item.name = "NaN"
+            if (item.age == undefined || item.age == "") item.age = "NaN"
+            if (item.height == undefined || item.height == "") item.height = "NaN"
+            if (item.weight == undefined || item.weight == "") item.weight = "NaN"
+            data += `${item.id},${item.userName},${item.passWord},${item.key},${item.name},${item.age},${item.height},${item.weight},\n`
         })
         return data
     }
@@ -74,12 +74,12 @@ export class StaffManage extends AccountManage {
     addMemberToStaff(idMember: number, idStaff: number): string {
         let indexMember = this.findByIdMember(idMember)
         let indexStaff = this.findByIdStaff(idStaff)
-        if (indexMember == -1) return "Id client not found"
+        if (indexMember == -1) return "Id member not found"
         else if (indexStaff == -1) return "Id Staff not found"
         else {
             this.listStaffs[indexStaff].addClient(this.listMember[indexMember])
             this.listMember.splice(indexMember, 1)
-            return "Add client to staff done"
+            return "Add member to staff done"
         }
     }
 
@@ -98,6 +98,14 @@ export class StaffManage extends AccountManage {
         else return this.listStaffs[indexStaff].deleteClient(idMember)
     }
 
+    findIndexByAccount(userName: string, passWord: string): number {
+        let index: number = -1
+        this.listStaffs.forEach((item, idx) => {
+            if (item.userName == userName && item.passWord == passWord) index = idx
+        })
+        return index
+    }
+
     findByIdMember(id: number): number {
         let flag = -1
         this.listMember.forEach((item, index) => {
@@ -114,8 +122,12 @@ export class StaffManage extends AccountManage {
         return flag
     }
 
-    displayStaff() {
-        return this.listStaffs
+    displayStaff(): string {
+        let data = ""
+        this.listStaffs.forEach((item) => {
+            data += `Id: ${item.id}, Name: ${item.name}, Age: ${item.age}\nList Client:\n${item.displayListClient()}\n`
+        })
+        return data
     }
 
     displayOneStaff(idStaff: number): string | ClientManage {
@@ -124,7 +136,12 @@ export class StaffManage extends AccountManage {
         else return this.listStaffs[indexStaff]
     }
 
-    displayListMember() {
-        return this.listMember
+    displayListMember(): string {
+        let data = ""
+        this.listMember.forEach((item) => {
+            data += `Id: ${item.id}, Name: ${item.name}, Age: ${item.age}
+`
+        })
+        return data
     }
 }

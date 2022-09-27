@@ -13,7 +13,17 @@ export class ClientManage extends Account {
         this._name = name;
         this._age = age;
     }
-
+    listClientToString(){
+        let data: string = ""
+        this.listClient.forEach((item, index) => {
+            if (item.name == undefined || item.name == "") item.name = "undefined"
+            if (item.age == undefined || item.age == "") item.age = "undefined"
+            if (item.height == undefined || item.height == "") item.height = "undefined"
+            if (item.weight == undefined || item.weight == "") item.weight = "undefined"
+            data += `${item.id},${item.userName},${item.passWord},${item.key},${item.name},${item.age},${item.height},${item.weight},\n`
+        })
+        return data
+    }
     updateInfo(id: number, name?: string, age?: number, height?: number, weight?: number): string {
         let index = this.findById(id)
         if (index != -1) {
@@ -37,8 +47,12 @@ export class ClientManage extends Account {
         this.listClient.push(client)
     }
 
-    displayListClient(): Client[] {
-        return this.listClient
+    displayListClient(): string {
+        let data = ""
+        this.listClient.forEach(item=>{
+            data +=`Id: ${item.id}, Name: ${item.name}, Age: ${item.age}\n`
+        })
+        return data
     }
 
     findById(id: number): number {
