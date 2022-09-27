@@ -427,7 +427,24 @@ function addMemberToStaff() {
 }
 
 function deleteStaff() {
-
+    let choice: number
+    let info = `-----DELETE STAFF-----
+    1. Continue
+    0. Back to menu`
+    console.log(info)
+    let idStaff = +input.question("Input Id staff: ")
+    console.log(manager.deleteStaff(idStaff))
+    do {
+        choice = +input.question("Your select: ")
+        switch (choice) {
+            case 1:
+                deleteStaff()
+                break
+            case 0:
+                displayStaff()
+                break
+        }
+    } while (choice == -1)
 }
 
 function deleteClientFromStaff() {

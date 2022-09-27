@@ -1,10 +1,10 @@
 import {ClientManage} from "./clientManage";
 import {Client} from "../service/client";
 import {AccountManage} from "./accountManage";
-import it from "node:test";
 
 export class StaffManage extends AccountManage {
     listStaffs: ClientManage[] = []
+    tempListMember: Client[] = []
     listMember: Client[] = []
 
     readDataListStaff(arrData: any): any {
@@ -47,8 +47,8 @@ export class StaffManage extends AccountManage {
             let newClient = new Client(id, userName, passWord, key, name, age, height, weight)
             tempArray.push(newClient)
         }
-        this.listMember = [...tempArray];
-        return this.listMember
+        this.tempListMember = [...tempArray];
+        return this.tempListMember
     }
 
     listMemberToString(): string {
@@ -68,34 +68,56 @@ export class StaffManage extends AccountManage {
     }
 
     addClientToListMember(client: Client) {
+        this.tempListMember.push(client)
         this.listMember.push(client)
     }
 
     addMemberToStaff(idMember: number, idStaff: number): string {
-        let indexMember = this.findByIdMember(idMember)
+        let indexTempMember = this.findByIdTempListMember(idMember)
         let indexStaff = this.findByIdStaff(idStaff)
-        if (indexMember == -1) return "Id member not found"
+        if (indexTempMember == -1) return "Id member not found"
         else if (indexStaff == -1) return "Id Staff not found"
         else {
-            this.listStaffs[indexStaff].addClient(this.listMember[indexMember])
-            this.listMember.splice(indexMember, 1)
+            this.listStaffs[indexStaff].addClient(this.tempListMember[indexTempMember])
+            this.tempListMember.splice(indexTempMember, 1)
             return "Add member to staff done"
         }
     }
 
+    deleteStaff(idStaff: number): any {
+        let indexStaff = this.findByIdStaff(idStaff)
+        if (indexStaff != -1) {
+            this.listStaffs.forEach((item, idx) => {
+                if (idx == indexStaff) {
+                    item.listClient.forEach(value => {
+                        this.tempListMember.push(value)
+                    })
+                }
+            })
+            this.listStaffs.splice(indexStaff, 1)
+            return "Delete staff done"
+        } else return "Id staff not found"
+    }
+
     deleteMemberFromListMember(idMember: number): string {
-        let indexMember = this.findByIdMember(idMember)
-        if (indexMember == -1) return "Id client not found"
+        let indexTempMember = this.findByIdTempListMember(idMember)
+        let indexMember = this.findByIdListMember(idMember)
+        if (indexTempMember == -1) return "Id client not found"
         else {
+            this.tempListMember.splice(indexTempMember, 1)
             this.listMember.splice(indexMember, 1)
             return "Delete client done"
         }
     }
 
     deleteMemberFromListStaff(idMember: number, idStaff: number): string {
+        let indexMember = this.findByIdListMember(idMember)
         let indexStaff = this.findByIdStaff(idStaff)
         if (indexStaff == -1) return "Id staff not found"
-        else return this.listStaffs[indexStaff].deleteClient(idMember)
+        else {
+            this.listMember.splice(indexMember, 1)
+            return this.listStaffs[indexStaff].deleteClient(idMember)
+        }
     }
 
     findIndexByAccount(userName: string, passWord: string): number {
@@ -106,9 +128,17 @@ export class StaffManage extends AccountManage {
         return index
     }
 
-    findByIdMember(id: number): number {
+    findByIdListMember(id: number): number {
         let flag = -1
         this.listMember.forEach((item, index) => {
+            if (item.id == id) flag = index
+        })
+        return flag
+    }
+
+    findByIdTempListMember(id: number): number {
+        let flag = -1
+        this.tempListMember.forEach((item, index) => {
             if (item.id == id) flag = index
         })
         return flag
@@ -138,7 +168,7 @@ export class StaffManage extends AccountManage {
 
     displayListMember(): string {
         let data = ""
-        this.listMember.forEach((item) => {
+        this.tempListMember.forEach((item) => {
             data += `Id: ${item.id}, Name: ${item.name}, Age: ${item.age}
 `
         })
