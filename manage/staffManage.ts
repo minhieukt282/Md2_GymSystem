@@ -6,6 +6,20 @@ export class StaffManage extends AccountManage {
     listStaffs: ClientManage[] = []
     tempListMember: Client[] = []
     listMember: Client[] = []
+    listRevenue: number[] = []
+    countPaidMember: number = 0
+
+    showRevenue() {
+        let total: number = 0
+        this.listRevenue.forEach(item => {
+            total += item
+        })
+        return `${this.listRevenue}\nTotal Monthly Revenue: ${total}\nTotal Paid Member: ${this.countPaidMember}`
+    }
+
+    addRevenue(cost: number) {
+        this.listRevenue.push(cost)
+    }
 
     readDataListStaff(arrData: any): any {
         let tempArray: ClientManage[] = []
@@ -68,8 +82,8 @@ export class StaffManage extends AccountManage {
     }
 
     addClientToListMember(client: Client) {
-        this.tempListMember.push(client)
         this.listMember.push(client)
+        this.tempListMember.push(client)
     }
 
     addMemberToStaff(idMember: number, idStaff: number): string {
@@ -125,6 +139,17 @@ export class StaffManage extends AccountManage {
         this.listStaffs.forEach((item, idx) => {
             if (item.userName == userName && item.passWord == passWord) index = idx
         })
+        this.tempListMember.forEach((item, idx) => {
+            if (item.userName == userName && item.passWord == passWord) index = idx
+        })
+        return index
+    }
+
+    findIndex(userName: string, passWord: string): number {
+        let index: number = -1
+        this.listMember.forEach((item, idx) => {
+            if (item.userName == userName && item.passWord == passWord) index = idx
+        })
         return index
     }
 
@@ -169,8 +194,7 @@ export class StaffManage extends AccountManage {
     displayListMember(): string {
         let data = ""
         this.tempListMember.forEach((item) => {
-            data += `Id: ${item.id}, Name: ${item.name}, Age: ${item.age}
-`
+            data += `Id: ${item.id}, Name: ${item.name}, Age: ${item.age}\n`
         })
         return data
     }

@@ -1,3 +1,1 @@
-5,userOne,1,1,NaN,NaN,NaN,NaN,
-6,userTwo,1,1,Chi Hoa,41,NaN,NaN,
-7,userThree,1,1,NaN,35,NaN,NaN,
+1,1,1,1,NaN,NaN,NaN,NaN,

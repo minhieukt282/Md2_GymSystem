@@ -6,7 +6,7 @@ export class Client extends Account {
     private _height: any
     private _weight: any
     private _bmi: any
-
+    private _checkUpGrade: boolean = false
 
     constructor(id: number, userName: string, passWord: string, key: number, name?: string, age?: number, height?: number, weight?: number) {
         super(id, userName, passWord, key);
@@ -15,8 +15,42 @@ export class Client extends Account {
         this._height = height;
         this._weight = weight;
     }
-     showProfile(): string{
-        let info =  `-----MY INFORMATION-----
+
+    upGrade(addMonth: number): string {
+        let expirationDate = this.dateCalculation(addMonth)
+        let cost = this.totalCost(addMonth)
+        this.checkUpGrade = true
+        return `Total Month: ${Math.floor(addMonth)} - Cost: ${cost}$\nExpiration Date: ${expirationDate}\nUp Grade Done`
+    }
+
+    dateCalculation(addMonth: number): string {
+        addMonth = Math.floor(addMonth)
+        let today = new Date();
+        let month = today.getMonth() + 1
+        let year = today.getFullYear()
+        let i = 1
+        while (i <= addMonth) {
+            if (month < 12) {
+                month++;
+                i++;
+            } else {
+                month = 1;
+                year++;
+                i++
+            }
+        }
+        return `${today.getDate()}/${month}/${year}`
+    }
+
+    totalCost(addMonth: number): number {
+        addMonth = Math.floor(addMonth)
+        let monthly: number = 300
+        let cost = addMonth * monthly
+        return cost
+    }
+
+    showProfile(): string {
+        let info = `-----MY INFORMATION-----
         Name: ${this.name}
         Age: ${this.age}
         Height: ${this.height}
@@ -24,11 +58,20 @@ export class Client extends Account {
         BMI index: ${this.bmiIndex()}`
         return info
     }
+
     bmiIndex() {
         if (this.bmi < 18.5) return "thieu can"
         else if (this.bmi >= 18.5 && this.bmi < 24.9) return "binh thuong"
         else if (this.bmi >= 24.9 && this.bmi < 29.9) return "thua can"
         else return "beo thi cap 1"
+    }
+
+    get checkUpGrade(): boolean {
+        return this._checkUpGrade;
+    }
+
+    set checkUpGrade(value: boolean) {
+        this._checkUpGrade = value;
     }
 
     get bmi(): any {
