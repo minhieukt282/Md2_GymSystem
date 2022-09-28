@@ -9,18 +9,7 @@ export class StaffManage extends AccountManage {
     listRevenue: number[] = []
     countPaidMember: number = 0
 
-    showRevenue() {
-        let total: number = 0
-        this.listRevenue.forEach(item => {
-            total += item
-        })
-        return `${this.listRevenue}\nTotal Monthly Revenue: ${total}\nTotal Paid Member: ${this.countPaidMember}`
-    }
-
-    addRevenue(cost: number) {
-        this.listRevenue.push(cost)
-    }
-
+//--------------------------------------
     readDataListStaff(arrData: any): any {
         let tempArray: ClientManage[] = []
         for (let i = 0; i < arrData.length - 1; i += 6) {
@@ -75,6 +64,18 @@ export class StaffManage extends AccountManage {
             data += `${item.id},${item.userName},${item.passWord},${item.key},${item.name},${item.age},${item.height},${item.weight},\n`
         })
         return data
+    }
+//--------------------------------------
+    showRevenue() {
+        let total: number = 0
+        this.listRevenue.forEach(item => {
+            total += item
+        })
+        return `${this.listRevenue}\nTotal Monthly Revenue: ${total}\nTotal Paid Member: ${this.countPaidMember}`
+    }
+
+    addRevenue(cost: number) {
+        this.listRevenue.push(cost)
     }
 
     addStaff(listStaff: ClientManage) {

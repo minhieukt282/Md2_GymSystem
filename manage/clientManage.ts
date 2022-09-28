@@ -64,9 +64,10 @@ export class ClientManage extends Account {
     displayListClient(): string {
         let data = ""
         this.listClient.forEach(item => {
-            data += `Id: ${item.id}, Name: ${item.name}, Age: ${item.age}\n`
+            data += `Id: ${item.id}, Name: ${item.name}, Age: ${item.age}, Height: ${item.height}, Weight: ${item.weight}\n`
         })
-        return data
+        if (data == "") return "No data"
+        else return data
     }
 
     findById(id: number): number {

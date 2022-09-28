@@ -20,14 +20,14 @@ export class AccountManage {
     listAccountToString(): string {
         let data: string = ""
         this.listAccount.forEach(item => {
-            data += `${item.id},${item.userName},${item.passWord},${item.key},
-`
+            data += `${item.id},${item.userName},${item.passWord},${item.key},\n`
         })
         return data
     }
-    checkKey(userName: string, passWord: string): number{
+
+    checkKey(userName: string, passWord: string): number {
         let keyCode: number = -1
-        this.listAccount.forEach(item=>{
+        this.listAccount.forEach(item => {
             if (item.userName == userName && item.passWord == passWord) keyCode = item.key
         })
         return keyCode
@@ -57,7 +57,7 @@ export class AccountManage {
         return flag
     }
 
-     addAccount(account: Account): string {
+    addAccount(account: Account): string {
         this.listAccount.push(account)
         return "Create Account Success"
     }

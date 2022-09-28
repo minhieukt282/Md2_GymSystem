@@ -1,4 +1,4 @@
-export class ReadWriteFile {
+export class IOFile {
     fs = require('fs')
     url: string
 
@@ -15,3 +15,9 @@ export class ReadWriteFile {
         this.fs.writeFileSync(this.url, data)
     }
 }
+
+export class ListIOFile{
+    listIOFile: IOFile[]=[]
+
+}
+

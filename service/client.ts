@@ -59,19 +59,19 @@ export class Client extends Account {
         return info
     }
 
-    bmiIndex() {
-        if (this.bmi < 18.5) return "thieu can"
-        else if (this.bmi >= 18.5 && this.bmi < 24.9) return "binh thuong"
-        else if (this.bmi >= 24.9 && this.bmi < 29.9) return "thua can"
-        else return "beo thi cap 1"
-    }
-
     get checkUpGrade(): boolean {
         return this._checkUpGrade;
     }
 
     set checkUpGrade(value: boolean) {
         this._checkUpGrade = value;
+    }
+
+    bmiIndex() {
+        if (this.bmi < 18.5) return "Under weight, you need to eat more"
+        else if (this.bmi >= 18.5 && this.bmi < 24.9) return "Normal, perfect body"
+        else if (this.bmi >= 24.9 && this.bmi < 29.9) return "Over weight, you need to eat less"
+        else return "Obese, Eat less and exercise more"
     }
 
     get bmi(): any {
