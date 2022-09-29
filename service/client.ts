@@ -7,13 +7,15 @@ export class Client extends Account {
     private _weight: any
     private _bmi: any
     private _checkUpGrade: boolean = false
+    private _staffId: any
 
-    constructor(id: number, userName: string, passWord: string, key: number, name?: string, age?: number, height?: number, weight?: number) {
+    constructor(id: number, userName: string, passWord: string, key: number, name?: string, age?: number, height?: number, weight?: number, staffId?: any) {
         super(id, userName, passWord, key);
         this._name = name;
         this._age = age;
         this._height = height;
         this._weight = weight;
+        this._staffId = staffId
     }
 
     upGrade(addMonth: number): string {
@@ -58,20 +60,18 @@ export class Client extends Account {
         BMI index: ${this.bmiIndex()}`
         return info
     }
-
-    get checkUpGrade(): boolean {
-        return this._checkUpGrade;
+    editProfile(name?: string, age?: number):string{
+        if (name) this.name = name
+        if (age) this.age = age
+        return "Update done"
     }
-
-    set checkUpGrade(value: boolean) {
-        this._checkUpGrade = value;
-    }
-
     bmiIndex() {
-        if (this.bmi < 18.5) return "Under weight, you need to eat more"
-        else if (this.bmi >= 18.5 && this.bmi < 24.9) return "Normal, perfect body"
-        else if (this.bmi >= 24.9 && this.bmi < 29.9) return "Over weight, you need to eat less"
-        else return "Obese, Eat less and exercise more"
+        if (this.bmi != undefined) {
+            if (this.bmi < 18.5) return "Under weight, you need to eat more"
+            else if (this.bmi >= 18.5 && this.bmi < 24.9) return "Normal, perfect body"
+            else if (this.bmi >= 24.9 && this.bmi < 29.9) return "Over weight, you need to eat less"
+            else return "Obese, Eat less and exercise more"
+        } else return "NaN"
     }
 
     get bmi(): any {
@@ -79,6 +79,22 @@ export class Client extends Account {
             this._bmi = this._weight / (this._height * this._height)
             return this._bmi;
         }
+    }
+
+    get staffId(): any {
+        return this._staffId;
+    }
+
+    set staffId(value: any) {
+        this._staffId = value;
+    }
+
+    get checkUpGrade(): boolean {
+        return this._checkUpGrade;
+    }
+
+    set checkUpGrade(value: boolean) {
+        this._checkUpGrade = value;
     }
 
     get name(): string {
