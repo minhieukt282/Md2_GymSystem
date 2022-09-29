@@ -49,10 +49,14 @@ export class StaffManage extends AccountManage {
             let age = +arrData[i + 5]
             let height = +arrData[i + 6]
             let weight = +arrData[i + 7]
-            let staffId = +arrData[i + 8]
+            let staffId = arrData[i + 8]
             let checkUpGrade = this.changeStringToBoolean(arrData[i + 9])
             let isGateCoach = this.changeStringToBoolean(arrData[i + 10])
             let newClient = new Client(id, userName, passWord, key, name, age, height, weight, checkUpGrade, staffId, isGateCoach)
+            if (staffId != "NaN") {
+                let index = this.findByIdStaff(staffId)
+                this.listStaffs[index].listClient.push(newClient)
+            }
             tempArray.push(newClient)
         }
         this.listMember = [...tempArray];
@@ -149,7 +153,7 @@ export class StaffManage extends AccountManage {
         if (indexTempMember != -1) {
             if (indexStaff != -1) {
                 let client = this.tempListMember[indexTempMember]
-                this.listStaffs[indexStaff].listClient.push(client)
+                this.listStaffs[indexStaff].addClient(client)
                 this.tempListMember.splice(indexTempMember, 1)
                 let index = this.findByIdListMember(idMember)
                 this.listMember[index].staffId = idStaff
@@ -192,22 +196,19 @@ export class StaffManage extends AccountManage {
     moveMemberFromListStaff(idMember: number, idStaff: number): string {
         let indexStaff = this.findByIdStaff(idStaff)
         let indexMember = this.findByIdListMember(idMember)
-        if (indexStaff == -1) return "Staff Id not found"
-        else {
+        if (indexStaff != -1) {
             if (indexMember != -1) {
-                this.listStaffs.forEach((value, index) => {
-                    if (index == indexStaff) {
-                        value.listClient.forEach(item => {
-                            this.listMember[indexMember].staffId = ""
-                            this.listMember[indexMember].isGateCoach = false
-                            this.tempListMember.push(item)
-                        })
+                this.listStaffs[indexStaff].listClient.forEach((item, index) => {
+                    if (index == indexMember) {
+                        console.log("vao day chua")
+                        this.listMember[indexMember].staffId = "NaN"
+                        this.listMember[indexMember].isGateCoach = false
+                        this.tempListMember.push(item)
                     }
                 })
                 return "Move Client to Member done"
             } else return "Client Id not found"
-            // return indexMember
-        }
+        } else return "Staff Id not found"
     }
 
     findIndexByAccount(userName: string, passWord: string): number {

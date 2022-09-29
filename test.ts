@@ -1,29 +1,29 @@
-// let today = new Date();
-// let date = today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
-// let time = today.getHours() + ':' + today.getMinutes();
-// let dateTime = time + ' - ' + date;
-// let month = today.getMonth() + 1
-// let year = today.getFullYear()
+// // let today = new Date();
+// // let date = today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
+// // let time = today.getHours() + ':' + today.getMinutes();
+// // let dateTime = time + ' - ' + date;
+// // let month = today.getMonth() + 1
+// // let year = today.getFullYear()
+// //
+// // let addMonth = 2
+// //
+// // let i = 1
+// // while (i <= addMonth) {
+// //     if (month < 12) {
+// //         month++;
+// //         i++;
+// //     } else {
+// //         month = 1;
+// //         year++;
+// //         i++
+// //     }
+// // }
+// // console.log(today.getDate(),month, year)
+// import {ClientManage} from "./manage/clientManage";
+// import {Client} from "./service/client";
+// import {StaffManage} from "./manage/staffManage";
+// import {IOFile} from "./readWriteFile";
 //
-// let addMonth = 2
-//
-// let i = 1
-// while (i <= addMonth) {
-//     if (month < 12) {
-//         month++;
-//         i++;
-//     } else {
-//         month = 1;
-//         year++;
-//         i++
-//     }
-// }
-// console.log(today.getDate(),month, year)
-import {ClientManage} from "./manage/clientManage";
-import {Client} from "./service/client";
-import {StaffManage} from "./manage/staffManage";
-import {IOFile} from "./readWriteFile";
-
 // let url_1 = "./text/dataAccount.txt"
 // let url_2 = "./text/dataListMember.txt"
 // let url_3 = "./text/dataListStaff.txt"
@@ -60,7 +60,7 @@ import {IOFile} from "./readWriteFile";
 //     manager.readDataTempListMember(arrTempListMember)
 // }
 //
-// readData()
+// // readData()
 //
 // let a = new StaffManage()
 // let user1 = new Client(5, "userOne", "1", 1)
@@ -77,10 +77,11 @@ import {IOFile} from "./readWriteFile";
 //
 // a.addMemberToStaff(5,8)
 // a.addMemberToStaff(6,8)
-// console.log(admin1)
-
-
-
-
-
-
+// // console.log("------------dasdasdasdasd")
+// console.log(admin1.displayListClient())
+// // console.log(a.displayStaff())
+//
+//
+//
+//
+//
