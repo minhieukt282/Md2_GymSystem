@@ -6,16 +6,20 @@ export class Client extends Account {
     private _height: any
     private _weight: any
     private _bmi: any
-    private _checkUpGrade: boolean = false
+    private _checkUpGrade: any = false
     private _staffId: any
+    private _isGateCoach: any = false
 
-    constructor(id: number, userName: string, passWord: string, key: number, name?: string, age?: number, height?: number, weight?: number, staffId?: any) {
+
+    constructor(id: number, userName: string, passWord: string, key: number, name?: any, age?: any, height?: any, weight?: any, checkUpGrade?: any, staffId?: any, isGateCoach?: any) {
         super(id, userName, passWord, key);
         this._name = name;
         this._age = age;
         this._height = height;
         this._weight = weight;
-        this._staffId = staffId
+        this._checkUpGrade = checkUpGrade;
+        this._staffId = staffId;
+        this._isGateCoach = isGateCoach;
     }
 
     upGrade(addMonth: number): string {
@@ -72,6 +76,14 @@ export class Client extends Account {
             else if (this.bmi >= 24.9 && this.bmi < 29.9) return "Over weight, you need to eat less"
             else return "Obese, Eat less and exercise more"
         } else return "NaN"
+    }
+
+    get isGateCoach(): boolean {
+        return this._isGateCoach;
+    }
+
+    set isGateCoach(value: boolean) {
+        this._isGateCoach = value;
     }
 
     get bmi(): any {

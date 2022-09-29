@@ -4,14 +4,21 @@ import {StaffManage} from "./manage/staffManage";
 import {ClientManage} from "./manage/clientManage";
 import {Client} from "./service/client";
 
+
 const USER: number = 1
 const STAFF: number = 2
 const MANAGER: number = 3
 
-let today = new Date();
-let date = today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
-let time = today.getHours() + ':' + today.getMinutes();
-let dateTime = time + ' - ' + date;
+// let today = new Date();
+// let date = today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
+// let time = today.getHours() + ':' + today.getMinutes();
+// let dateTime = time + ' - ' + date;
+
+let indexStaff: number
+let indexTempClient: number
+let indexClient: number
+let isStatusUpgrade = false
+let isGateCoach = false
 
 let input = require('readline-sync');
 let url_1 = "./text/dataAccount.txt"
@@ -19,11 +26,6 @@ let url_2 = "./text/dataListMember.txt"
 let url_3 = "./text/dataListStaff.txt"
 let url_4 = "./text/dataTempListMember.txt"
 
-let indexStaff: number
-let indexTempClient: number
-let indexClient: number
-let isStatusUpgrade = false
-let isStatus = false
 let arrAccount = []
 let arrTempListMember = []
 let arrListMember = []
@@ -57,11 +59,9 @@ function readData() {
 }
 
 readData()
-console.log(manager.listMember)
-console.log("----------------")
-console.log(manager.tempListMember)
 
 function start() {
+    readData()
     let choice: number
     let info = `-----WELCOME-----
     1. Login
@@ -78,9 +78,14 @@ function start() {
                 break
         }
     } while (choice != -1)
-}
+}//done<<<<<<<<<<<<<<<<
 
 function login() {
+    isStatusUpgrade = false
+    isGateCoach = false
+    indexStaff = -1
+    indexTempClient = -1
+    indexClient = -1
     readData()
     let choice: number
     let info = `-----LOGIN-----
@@ -99,6 +104,8 @@ function login() {
         } else {
             indexTempClient = manager.findIndexByAccount(userName, passWord)
             indexClient = manager.findIndex(userName, passWord)
+            isStatusUpgrade = manager.listMember[indexClient].checkUpGrade
+            isGateCoach = manager.listMember[indexClient].isGateCoach
             startClient()
         }
     } else {
@@ -118,7 +125,7 @@ function login() {
             }
         } while (choice != -1)
     }
-}//<<<<<<<<<<<<<<<<
+}//done<<<<<<<<<<<<<<<<
 
 function register() {
     readData()
@@ -154,9 +161,10 @@ function register() {
             login()
         }
     }
-}//<<<<<<<<<<<<<<<<
+}//done<<<<<<<<<<<<<<<<
 
 //----------------------------------------
+//done client
 function startClient() {
     readData()
     let choice: number
@@ -191,15 +199,14 @@ function startClient() {
                 break
         }
     } while (choice != -1)
-}//done
-
+}//done<<<<<<<<<<<<<<<
 function myProfile() {
     let choice: number
     let info = `-----MY PROFILE-----
     1. Edit Profile
     0. Back to menu`
     console.log(info)
-    let id = +input.question("Enter my id: ")
+    let id = +input.question("Enter Id to confirm: ")
     let index = manager.findByIdListMember(id)
     console.log(manager.listMember[index].showProfile())
     do {
@@ -214,7 +221,7 @@ function myProfile() {
         }
     } while (choice != -1)
 }//done<<<<<<<<<<<<<<<<
-function editMyProfile(){
+function editMyProfile() {
     let choice: number
     let info = `-----EDIT MY PROFILE-----
     0. Back to menu
@@ -222,12 +229,12 @@ function editMyProfile(){
     console.log(info)
     let name = input.question("Update my name: ")
     let age = Math.floor(+input.question("Update my age: "))
-    let id = +input.question("Enter id to confirm: ")
+    let id = +input.question("Enter Id to confirm: ")
     let index = manager.findByIdListMember(id)
-    if (index != -1){
+    if (index != -1) {
         manager.listMember[index].editProfile(name, age)
         writeData()
-    } else console.log("Id not found, please try again"   )
+    } else console.log("Id not found, please try again")
     do {
         choice = +input.question("Your select: ")
         switch (choice) {
@@ -241,81 +248,110 @@ function editMyProfile(){
     } while (choice != -1)
 }//done<<<<<<<<<<<<<<<<<
 function myWorkout() {
-    let choice: number
-    let info = `-----MY EXERCISE-----
+    if (isStatusUpgrade) {
+        let choice: number
+        let info = `-----MY EXERCISE-----
     0. Back to menu`
-    console.log(info)
-    let info2 = "Name: Barbell bench press >< Set-Rep: 5x12 >< Reset: 60s\n" +
-        "Name: Barbell bench press >< Set-Rep: 5x12 >< Reset: 60s\n" +
-        "Name: Barbell bench press >< Set-Rep: 5x12 >< Reset: 60s\n"
-    console.log(info2)
-    do {
-        choice = +input.question("Your select: ")
-        switch (choice) {
-            case 0:
-                startClient()
-                break
-        }
-    } while (choice != -1)
+        console.log(info)
+        let info2 = "Name: Barbell bench press >< Set-Rep: 5x12 >< Reset: 60s\n" +
+            "Name: Barbell bench press >< Set-Rep: 5x12 >< Reset: 60s\n" +
+            "Name: Barbell bench press >< Set-Rep: 5x12 >< Reset: 60s\n"
+        console.log(info2)
+        do {
+            choice = +input.question("Your select: ")
+            switch (choice) {
+                case 0:
+                    startClient()
+                    break
+            }
+        } while (choice != -1)
+    } else {
+        let note = input.question("Upgrade your account to unlock the functionality. \nPress enter to skip")
+        if (note) {
+        } else startClient()
+    }
 }//done
-
 function myDiet() {
-    let choice: number
-    let info = `-----MY DIET-----
-    0. Back to menu`
-    console.log(info)
-    let info2 = "An gi cung duoc"
-    console.log(info2)
-    do {
-        choice = +input.question("Your select: ")
-        switch (choice) {
-            case 0:
-                startClient()
-                break
-        }
-    } while (choice != -1)
+    if (isStatusUpgrade) {
+        let choice: number
+        let info = `-----MY DIET-----
+        0. Back to menu`
+        console.log(info)
+        let info2 = "Eat any thing"
+        console.log(info2)
+        do {
+            choice = +input.question("Your select: ")
+            switch (choice) {
+                case 0:
+                    startClient()
+                    break
+            }
+        } while (choice != -1)
+    } else {
+        let note = input.question("Upgrade your account to unlock the functionality. \nPress enter to skip")
+        if (note) {
+        } else startClient()
+    }
 }//done
-
 function contactPT() {
-    let choice: number
-    let info = `-----CONTACT MY PERSONAL TRAINER-----
-    0. Back to menu`
-    console.log(info)
-    console.log("dang phat trien")
-    do {
-        choice = +input.question("Your select: ")
-        switch (choice) {
-            case 0:
-                startClient()
-                break
-        }
-    } while (choice != -1)
+    if (isGateCoach) {
+        let choice: number
+        let info = `-----CONTACT MY PERSONAL TRAINER-----
+        0. Back to menu`
+        console.log(info)
+        console.log("DEVELOPING............")
+        do {
+            choice = +input.question("Your select: ")
+            switch (choice) {
+                case 0:
+                    startClient()
+                    break
+            }
+        } while (choice != -1)
+    } else {
+        let note = input.question("If you haven't signed up for a trainer, upgrade your account to unlock the functionality. \nPress enter to skip")
+        if (note) {
+        } else startClient()
+    }
 }//done
-
 function upGradeAccount() {
     let choice: number
     let info = `-----UP GRADE ACCOUNT-----
-    0. Back to menu`
+    When you sign up as a member you will unlock channel "My workout" and "My diet".
+    You can choose your personal trainer anytime you want and you will unlock 
+    the ability to talk directly with the coach.
+    Cost 300 per month
+    0. Back to menu
+    Press enter to skip`
     console.log(info)
-    if (isStatus) {
-        console.log("You have signed up for a coach")
-        startClient()
+    if (isGateCoach) {
+        let note = input.question("You have signed up for a coach, press enter to skip")
+        if (note) {
+        } else startClient()
     } else {
         if (isStatusUpgrade) {
             console.log(`>>>>>Select Coach<<<<<\n${manager.displayStaff()}`)
-            let idMember = Math.floor(+input.question("Enter Your Id: "))
+            let idMember = Math.floor(+input.question("Enter My Id: "))
             let idStaff = Math.floor(+input.question("Enter Coach Id: "))
-            console.log(manager.addMemberToStaff(idMember, idStaff))
-            isStatus = true
-            console.log("dang phat trien")
+            let checkGate = Math.floor(+input.question("Press 1 to confirm: "))
+            if (checkGate == 1) {
+                console.log(manager.addMemberToStaff(idMember, idStaff))
+                isGateCoach = true
+                manager.isCheckGate(idMember, isStatusUpgrade, isGateCoach)
+                writeData()
+            }
         } else {
             let addMonth = +input.question("Enter the number of subscription months: ")
-            console.log(manager.tempListMember[indexTempClient].upGrade(addMonth))
-            let cost = manager.tempListMember[indexTempClient].totalCost(addMonth)
-            manager.addRevenue(cost)
-            manager.countPaidMember++
-            isStatusUpgrade = true
-            console.log("Reload up grade account to select coach")
+            let idMember = Math.floor(+input.question("Enter My Id to confirm: "))
+            if (addMonth != 0) {
+                console.log(manager.tempListMember[indexTempClient].upGrade(addMonth))
+                let cost = manager.tempListMember[indexTempClient].totalCost(addMonth)
+                manager.addRevenue(cost)
+                manager.countPaidMember++
+                isStatusUpgrade = true
+                manager.isCheckGate(idMember, isStatusUpgrade, isGateCoach)
+                writeData()
+            }
         }
         do {
             choice = +input.question("Your select: ")
@@ -326,10 +362,11 @@ function upGradeAccount() {
             }
         } while (choice != -1)
     }
-}//done
+}//done<<<<<<<<<<<<<<<<<<<
 
 //----------------------------------------
 function startStaff() {
+    readData()
     let choice: number
     let info = `-----WELCOME STAFF-----
     1. Show client
@@ -345,7 +382,7 @@ function startStaff() {
                 showListClient()
                 break
             case 2:
-                console.log("dang phat trien")
+                console.log("DEVELOPING..............")
                 break
             case 3:
                 updateClientProfile()
@@ -372,7 +409,7 @@ function updateClientProfile() {
     let info2 = manager.listStaffs[indexStaff].displayListClient()
     console.log(info2)
     if (info2 != "No data") {
-        let idClient = Math.floor(+input.question("Enter client id: "))
+        let idClient = Math.floor(+input.question("Enter client Id: "))
         let name = input.question("Update client name: ")
         let age = Math.floor(+input.question("Update client age: "))
         let height = Math.floor(+input.question("Update client height: "))
@@ -407,7 +444,7 @@ function showListClient() {
     readData()
     let choice: number
     let info = `-----LIST MY CLIENT-----
-    1. Delete client
+    1. Edit client profile
     0. Back to menu`
     console.log(info)
     console.log(manager.listStaffs[indexStaff].displayListClient())
@@ -415,7 +452,7 @@ function showListClient() {
         choice = +input.question("Your select: ")
         switch (choice) {
             case 1:
-                staffDeleteClient()
+                updateMyProfile()
                 break
             case 0:
                 startStaff()
@@ -424,28 +461,29 @@ function showListClient() {
     } while (choice != -1)
 }//done<<<<<<<<<<<<<<<<<<<
 
-function staffDeleteClient() {
-    let choice: number
-    let info = `-----DELETE CLIENT-----
-    1. Continue
-    0. Back to menu
-    Press enter to skip`
-    console.log(info)
-    let idClient = Math.floor(+input.question("Enter client id: "))
-    let idStaff = Math.floor(+input.question("Enter my id: "))
-    console.log(manager.deleteMemberFromListStaff(idClient, idStaff))
-    do {
-        choice = +input.question("Your select: ")
-        switch (choice) {
-            case 1:
-                staffDeleteClient()
-                break
-            case 0:
-                startStaff()
-                break
-        }
-    } while (choice != -1)
-}//done
+// function staffDeleteClient() {
+//     let choice: number
+//     let info = `-----DELETE CLIENT-----
+//     1. Continue
+//     0. Back to menu
+//     Press enter to skip`
+//     console.log(info)
+//     let idClient = Math.floor(+input.question("Enter client Id: "))
+//     let idStaff = Math.floor(+input.question("Enter my Id: "))
+//     console.log(manager.moveMemberFromListStaff(idClient, idStaff))
+//     writeData()
+//     do {
+//         choice = +input.question("Your select: ")
+//         switch (choice) {
+//             case 1:
+//                 staffDeleteClient()
+//                 break
+//             case 0:
+//                 startStaff()
+//                 break
+//         }
+//     } while (choice != -1)
+// }//done<<<<<<<<<<<<<<<
 
 function updateMyProfile() {
     readData()
@@ -475,6 +513,7 @@ function updateMyProfile() {
 
 //----------------------------------------
 function startManage() {
+    readData()
     let choice: number
     let info = `-----WELCOME MANAGER-----
     1. Show Staff and Client
@@ -495,7 +534,7 @@ function startManage() {
                 break
         }
     } while (choice != -1)
-}//done
+}//done<<<<<<<<<<<<<<
 
 function revenue() {
     let choice: number
@@ -512,19 +551,19 @@ function revenue() {
         }
     } while (choice != -1)
 }//done
-// displayStaff()
+
 function displayStaff() {
     readData()
     let choice: number
     let info = `-----STAFF AND MEMBER-----
     1. Add Member to Staff
-    2. Delete Staff
-    3. Delete Client from Staff
-    4. Delete Client
+    2. Move Client from Staff 
+    3. Delete Staff
+    4. Delete Member
     0. Back to menu`
     console.log(info)
-    console.log(`>>>>>List Staff<<<<<\n${manager.displayStaff()}`)
-    // console.log(manager.listStaffs)
+    // console.log(`>>>>>List Staff<<<<<\n${manager.displayStaff()}`)
+    console.log(manager.listStaffs)
     console.log(`>>>>>List Member<<<<<\n${manager.displayListMember()}`)
     do {
         choice = +input.question("Your select: ")
@@ -533,21 +572,21 @@ function displayStaff() {
                 addMemberToStaff()
                 break
             case 2:
-                deleteStaff()
+                moveClientFromStaff()
                 break
             case 3:
-                deleteClientFromStaff()
+                deleteStaff()
                 break
             case 4:
-                deleteClient()
+                deleteMember()
                 break
             case 0:
                 startManage()
                 break
         }
     } while (choice != -1)
-}//done<<<<<<<<<<<
-
+}//done<<<<<<<<<<<>>>>>>>>>>>>>>>>>
+//done
 function addMemberToStaff() {
     readData()
     let choice: number
@@ -555,11 +594,11 @@ function addMemberToStaff() {
     1. Continue
     0. Back to menu`
     console.log(info)
-    let idMember = +input.question("Enter member id: ")
-    let idStaff = +input.question("Enter staff id: ")
+    let idMember = +input.question("Enter member Id: ")
+    let idStaff = +input.question("Enter staff Id: ")
     let info2 = manager.addMemberToStaff(idMember, idStaff)
     console.log(info2)
-    if (info2 =="Add member to staff done"){
+    if (info2 == "Add member to staff done") {
         writeData()
     }
     do {
@@ -573,8 +612,32 @@ function addMemberToStaff() {
                 break
         }
     } while (choice != -1)
-}//done?????????????
+}//done<<<<<<<<<<<<<<<<
 
+function moveClientFromStaff() {
+    readData()
+    console.log(manager.listStaffs)
+    let choice: number
+    let info = `-----MOVE CLIENT FROM STAFF-----
+    0. Back to menu`
+    console.log(info)
+    let idMember = +input.question("Enter the client Id to delete: ")
+    let idStaff = +input.question("Enter staff Id: ")
+    let info2 = manager.moveMemberFromListStaff(idMember, idStaff)
+    console.log(info2)
+    if (info2 == "Move Client to Member done") {
+        writeData()
+    }
+    do {
+        choice = +input.question("Your select: ")
+        switch (choice) {
+            case 0:
+                displayStaff()
+                break
+        }
+    } while (choice != -1)
+}//done<<<<<<<<<<<<<<<
+//done
 function deleteStaff() {
     readData()
     let choice: number
@@ -582,7 +645,7 @@ function deleteStaff() {
     1. Continue
     0. Back to menu`
     console.log(info)
-    let idStaff = +input.question("Enter staff id: ")
+    let idStaff = +input.question("Enter staff Id: ")
     let info2 = manager.deleteStaff(idStaff)
     console.log(info2)
     if (info2 == "Delete staff done") {
@@ -600,40 +663,19 @@ function deleteStaff() {
                 break
         }
     } while (choice != -1)
-}//done<<<<<<<<<<<<<<<<<<
-
-function deleteClientFromStaff() {
-    readData()
-    console.log(manager.listMember)
-    let choice: number
-    let info = `-----DELETE MEMBER FROM STAFF-----
-    0. Back to menu`
-    console.log(info)
-    let idMember = +input.question("Enter the client id to delete: ")
-    let idStaff = +input.question("Enter staff id: ")
-    console.log(manager.deleteMemberFromListStaff(idMember, idStaff))
-
-    do {
-        choice = +input.question("Your select: ")
-        switch (choice) {
-            case 0:
-                displayStaff()
-                break
-        }
-    } while (choice != -1)
-}//done???????????????????????
-
-function deleteClient() {
+}
+//done
+function deleteMember() {
     readData()
     let choice: number
     let info = `-----DELETE MEMBER-----
     1. Continue
     0. Back to menu`
     console.log(info)
-    let id = +input.question("Enter client id to delete: ")
-    let info2 = manager.deleteMemberFromListMember(id)
+    let id = +input.question("Enter member Id to delete: ")
+    let info2 = manager.deleteMember(id)
     console.log(info2)
-    if (info2 == "Delete client done") {
+    if (info2 == "Delete member done") {
         manager.deleteAccount(id)
         writeData()
     }
@@ -641,16 +683,16 @@ function deleteClient() {
         choice = +input.question("Your select: ")
         switch (choice) {
             case 1:
-                deleteClient()
+                deleteMember()
                 break
             case 0:
                 displayStaff()
                 break
         }
     } while (choice != -1)
-}//done<<<<<<<<<<<<<<<
-
-start()
+}
+moveClientFromStaff()
+// start()
 // startClient()
 // startStaff()
 // startManage()

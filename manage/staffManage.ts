@@ -11,9 +11,15 @@ export class StaffManage extends AccountManage {
     countPaidMember: number = 0
 
 //--------------------------------------
+    changeStringToBoolean(value: any) {
+        if (value == "true") value = true
+        if (value == "false") value = false
+        return value
+    }
+
     readDataTempListMember(arrDataTemp: any): any {
-        let tempArr: Client[] = []
-        for (let i = 0; i < arrDataTemp.length - 1; i += 9) {
+        let tempArray: Client[] = []
+        for (let i = 0; i < arrDataTemp.length - 1; i += 11) {
             let id = +arrDataTemp[i]
             let userName = arrDataTemp[i + 1]
             let passWord = arrDataTemp[i + 2]
@@ -23,15 +29,18 @@ export class StaffManage extends AccountManage {
             let height = +arrDataTemp[i + 6]
             let weight = +arrDataTemp[i + 7]
             let staffId = +arrDataTemp[i + 8]
-            let newClient = new Client(id, userName, passWord, key, name, age, height, weight, staffId)
-            tempArr.push(newClient)
+            let checkUpGrade = this.changeStringToBoolean(arrDataTemp[i + 9])
+            let isGateCoach = this.changeStringToBoolean(arrDataTemp[i + 10])
+            let newClient = new Client(id, userName, passWord, key, name, age, height, weight, checkUpGrade, staffId, isGateCoach)
+            tempArray.push(newClient)
         }
-        this.tempListMember = [...tempArr];
+        this.tempListMember = [...tempArray];
         return this.tempListMember
     }
+
     readDataListMember(arrData: any): any {
         let tempArray: Client[] = []
-        for (let i = 0; i < arrData.length - 1; i += 9) {
+        for (let i = 0; i < arrData.length - 1; i += 11) {
             let id = +arrData[i]
             let userName = arrData[i + 1]
             let passWord = arrData[i + 2]
@@ -41,12 +50,15 @@ export class StaffManage extends AccountManage {
             let height = +arrData[i + 6]
             let weight = +arrData[i + 7]
             let staffId = +arrData[i + 8]
-            let newClient = new Client(id, userName, passWord, key, name, age, height, weight, staffId)
+            let checkUpGrade = this.changeStringToBoolean(arrData[i + 9])
+            let isGateCoach = this.changeStringToBoolean(arrData[i + 10])
+            let newClient = new Client(id, userName, passWord, key, name, age, height, weight, checkUpGrade, staffId, isGateCoach)
             tempArray.push(newClient)
         }
         this.listMember = [...tempArray];
         return this.listMember
     }
+
     readDataListStaff(arrData: any): any {
         let tempArray: ClientManage[] = []
         for (let i = 0; i < arrData.length - 1; i += 6) {
@@ -62,6 +74,7 @@ export class StaffManage extends AccountManage {
         this.listStaffs = [...tempArray];
         return this.listStaffs
     }
+
     tempListMemberToString(): string {
         let data: string = ""
         this.tempListMember.forEach(value => {
@@ -70,10 +83,13 @@ export class StaffManage extends AccountManage {
             if (value.height == undefined || value.height == "") value.height = "NaN"
             if (value.weight == undefined || value.weight == "") value.weight = "NaN"
             if (value.staffId == undefined || value.staffId == "") value.staffId = "NaN"
-            data += `${value.id},${value.userName},${value.passWord},${value.key},${value.name},${value.age},${value.height},${value.weight},${value.staffId},\n`
+            if (value.checkUpGrade == undefined) value.checkUpGrade = false
+            if (value.isGateCoach == undefined) value.isGateCoach = false
+            data += `${value.id},${value.userName},${value.passWord},${value.key},${value.name},${value.age},${value.height},${value.weight},${value.staffId},${value.checkUpGrade},${value.isGateCoach},\n`
         })
         return data
     }
+
     listMemberToString(): string {
         let data: string = ""
         this.listMember.forEach(item => {
@@ -82,10 +98,13 @@ export class StaffManage extends AccountManage {
             if (item.height == undefined || item.height == "") item.height = "NaN"
             if (item.weight == undefined || item.weight == "") item.weight = "NaN"
             if (item.staffId == undefined || item.staffId == "") item.staffId = "NaN"
-            data += `${item.id},${item.userName},${item.passWord},${item.key},${item.name},${item.age},${item.height},${item.weight},${item.staffId},\n`
+            if (item.checkUpGrade == undefined) item.checkUpGrade = false
+            if (item.isGateCoach == undefined) item.isGateCoach = false
+            data += `${item.id},${item.userName},${item.passWord},${item.key},${item.name},${item.age},${item.height},${item.weight},${item.staffId},${item.checkUpGrade},${item.isGateCoach},\n`
         })
         return data
     }
+
     listStaffToString(): string {
         let data: string = ""
         this.listStaffs.forEach((item) => {
@@ -95,7 +114,14 @@ export class StaffManage extends AccountManage {
         })
         return data
     }
+
 //--------------------------------------
+    isCheckGate(idMember: number, isStatusUpGrade: boolean, isGateCoach: boolean) {
+        let index = this.findByIdListMember(idMember)
+        this.listMember[index].checkUpGrade = isStatusUpGrade
+        this.listMember[index].isGateCoach = isGateCoach
+    }
+
     showRevenue() {
         let total: number = 0
         this.listRevenue.forEach(item => {
@@ -120,16 +146,16 @@ export class StaffManage extends AccountManage {
     addMemberToStaff(idMember: number, idStaff: number): string {
         let indexTempMember = this.findByIdTempListMember(idMember)
         let indexStaff = this.findByIdStaff(idStaff)
-        if (indexTempMember == -1) return "Id member not found"
-        else if (indexStaff == -1) return "Id Staff not found"
-        else {
-            this.listStaffs[indexStaff].addClient(this.tempListMember[indexTempMember])
-            this.tempListMember.splice(indexTempMember, 1)
-
-            let index = this.findByIdListMember(idMember)
-            this.listMember[index].staffId = idStaff
-            return "Add member to staff done"
-        }
+        if (indexTempMember != -1) {
+            if (indexStaff != -1) {
+                let client = this.tempListMember[indexTempMember]
+                this.listStaffs[indexStaff].listClient.push(client)
+                this.tempListMember.splice(indexTempMember, 1)
+                let index = this.findByIdListMember(idMember)
+                this.listMember[index].staffId = idStaff
+                return "Add member to staff done"
+            } else return "Staff Id not found"
+        } else return "Member Id not found"
     }
 
     deleteStaff(idStaff: number): any {
@@ -138,34 +164,49 @@ export class StaffManage extends AccountManage {
             this.listStaffs.forEach((item, idx) => {
                 if (idx == indexStaff) {
                     item.listClient.forEach(value => {
-                        this.tempListMember.push(value)
+                        let index = this.findByIdListMember(value.id)
+                        if (index != -1) {
+                            this.listMember[index].staffId = ""
+                            this.listMember[index].isGateCoach = false
+                            this.tempListMember.push(value)
+                        }
                     })
                 }
             })
             this.listStaffs.splice(indexStaff, 1)
             return "Delete staff done"
-        } else return "Id staff not found"
+        } else return "Staff Id not found"
     }
-//dang loi
-    deleteMemberFromListMember(idMember: number): string {
+
+    deleteMember(idMember: number): string {
         let indexTempMember = this.findByIdTempListMember(idMember)
         let indexMember = this.findByIdListMember(idMember)
-        if (indexTempMember == -1) return "Id client not found"
+        if (indexTempMember == -1) return "Member Id not found"
         else {
             this.tempListMember.splice(indexTempMember, 1)
             this.listMember.splice(indexMember, 1)
-            return "Delete client done"
+            return "Delete member done"
         }
     }
 
-    deleteMemberFromListStaff(idMember: number, idStaff: number): string {
-        let indexMember = this.findByIdListMember(idMember)
+    moveMemberFromListStaff(idMember: number, idStaff: number): string {
         let indexStaff = this.findByIdStaff(idStaff)
-        if (indexStaff == -1) return "Id staff not found"
+        let indexMember = this.findByIdListMember(idMember)
+        if (indexStaff == -1) return "Staff Id not found"
         else {
-            this.listMember[indexMember].staffId = ""
-            this.listMember.splice(indexMember, 1)
-            return this.listStaffs[indexStaff].deleteClient(idMember)
+            if (indexMember != -1) {
+                this.listStaffs.forEach((value, index) => {
+                    if (index == indexStaff) {
+                        value.listClient.forEach(item => {
+                            this.listMember[indexMember].staffId = ""
+                            this.listMember[indexMember].isGateCoach = false
+                            this.tempListMember.push(item)
+                        })
+                    }
+                })
+                return "Move Client to Member done"
+            } else return "Client Id not found"
+            // return indexMember
         }
     }
 
@@ -231,6 +272,7 @@ export class StaffManage extends AccountManage {
         this.tempListMember.forEach((item) => {
             data += `Id: ${item.id}, Name: ${item.name}, Age: ${item.age}\n`
         })
-        return data
+        if (data != "") return data
+        else return "Members have their own personal trainer"
     }
 }

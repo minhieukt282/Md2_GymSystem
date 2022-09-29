@@ -55,7 +55,7 @@ export class ClientManage extends Account {
         if (index != -1) {
             this.listClient.splice(index, 1)
             return "Delete done"
-        } else return "ID client not found"
+        } else return "Client Id not found"
     }
 
     addClient(client: Client): void {
