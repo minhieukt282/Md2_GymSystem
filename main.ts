@@ -315,7 +315,7 @@ function upgradeAccount() {
     When you sign up as a member you will unlock channel "My workout" and "My diet".
     You can choose your personal trainer anytime you want and you will unlock 
     the ability to talk directly with the coach.
-    Cost 300 per month
+    Price: 300 per month
     0. Back to menu
     Press enter to skip`
     console.log(info)
@@ -393,7 +393,6 @@ function startStaff() {
 }//done
 
 function updateClientProfile() {
-    //do data client
     readData()
     let choice: number
     let info = `--------------------UPDATE CLIENT PROFILE--------------------
@@ -447,7 +446,7 @@ function showListClient() {
         choice = +input.question("Your select: ")
         switch (choice) {
             case 1:
-                updateMyProfile()
+                updateClientProfile()
                 break
             case 0:
                 startStaff()
@@ -512,7 +511,8 @@ function revenue() {
     let info = `--------------------MONTHLY REVENUE--------------------
     0. Back to menu`
     console.log(info)
-    console.log(manager.showRevenue())
+    console.log("Developing........")
+    // console.log(manager.showRevenue())
     do {
         choice = +input.question("Your select: ")
         switch (choice) {
@@ -583,7 +583,7 @@ function addMemberToStaff() {
         }
     } while (choice != -1)
 }
-//fixing
+//done
 function moveClientFromStaff() {
     readData()
     console.log(manager.listStaffs)
@@ -662,10 +662,8 @@ function deleteMember() {
     } while (choice != -1)
 }
 
-// start()
+start()
 
-readData()
-console.log(manager.listStaffs.length)
 
 // manager.addMemberToStaff(1, 10)
 // manager.addMemberToStaff(2, 10)
@@ -673,15 +671,40 @@ console.log(manager.listStaffs.length)
 // manager.addMemberToStaff(4, 10)
 // writeData()
 // readData()
-let a = input.question("member ")
-let b = input.question("staff ")
-manager.moveMemberFromListStaff(a, b)
-writeData()
-readData()
-console.log(manager.listStaffs[0])
-a = input.question("member ")
-b = input.question("staff ")
-manager.moveMemberFromListStaff(a, b)
-writeData()
-readData()
-console.log(manager.listStaffs[0])
+// console.log(manager.listStaffs[0].displayListClient())
+// let a = input.question("member ")
+// let b = input.question("staff ")
+// manager.moveMemberFromListStaff(a, b)
+// writeData()
+// console.log("__________________")
+// readData()
+// console.log(manager.listStaffs[0].displayListClient())
+// let c = input.question("member ")
+// let d = input.question("staff ")
+// manager.moveMemberFromListStaff(c, d)
+// writeData()
+// console.log("__________________")
+// readData()
+// console.log(manager.listStaffs[0].displayListClient())
+// let e = input.question("member ")
+// let f = input.question("staff ")
+// manager.moveMemberFromListStaff(e,f)
+// writeData()
+// console.log("__________________")
+// readData()
+// console.log(manager.listStaffs[0].displayListClient())
+// let g = input.question("member ")
+// let h = input.question("staff ")
+// manager.moveMemberFromListStaff(g,h)
+// writeData()
+// console.log("__________________")
+// readData()
+// console.log(manager.listStaffs[0].displayListClient())
+// let i = input.question("member ")
+// let k = input.question("staff ")
+// manager.moveMemberFromListStaff(i,k)
+// writeData()
+// console.log("__________________")
+// readData()
+// console.log(manager.listStaffs[0].displayListClient())
+

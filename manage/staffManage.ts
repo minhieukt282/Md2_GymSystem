@@ -198,9 +198,10 @@ export class StaffManage extends AccountManage {
         let indexMember = this.findByIdListMember(idMember)
         if (indexStaff != -1) {
             if (indexMember != -1) {
-                this.listStaffs[indexStaff].listClient.forEach((item, index) => {
+                // let listClientOfStaff = this.listStaffs[indexStaff].listClient;
+                this.listStaffs[indexStaff].deleteClient(idMember)
+                this.listMember.forEach((item, index) => {
                     if (index == indexMember) {
-                        console.log("vao day chua")
                         this.listMember[indexMember].staffId = "NaN"
                         this.listMember[indexMember].isGateCoach = false
                         this.tempListMember.push(item)
