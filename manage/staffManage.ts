@@ -212,6 +212,14 @@ export class StaffManage extends AccountManage {
         } else return "Staff Id not found"
     }
 
+    findIdByAccount(userName: string, passWord: string): number{
+        let id: number = -1
+        this.listMember.forEach((item, index)=>{
+            if (item.userName == userName && item.passWord == passWord) id = item.id
+        })
+        return id
+    }
+
     findIndexByAccount(userName: string, passWord: string): number {
         let index: number = -1
         this.listStaffs.forEach((item, idx) => {

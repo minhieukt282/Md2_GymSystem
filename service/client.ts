@@ -60,8 +60,8 @@ export class Client extends Account {
         Name: ${this.name}
         Age: ${this.age}
         Height: ${this.height}
-        Weight: ${this.weight}
-        BMI index: ${this.bmiIndex()}`
+        Weight: ${this.weight}`
+        // BMI index: ${this.bmiIndex()}`
         return info
     }
     editProfile(name?: string, age?: number):string{

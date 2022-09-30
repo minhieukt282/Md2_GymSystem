@@ -4,7 +4,6 @@ import {StaffManage} from "./manage/staffManage";
 import {ClientManage} from "./manage/clientManage";
 import {Client} from "./service/client";
 
-
 const USER: number = 1
 const STAFF: number = 2
 const MANAGER: number = 3
@@ -17,6 +16,7 @@ const MANAGER: number = 3
 let indexStaff: number
 let indexTempClient: number
 let indexClient: number
+let checkId: number
 let isStatusUpgrade = false
 let isGateCoach = false
 
@@ -99,13 +99,14 @@ function login() {
         } else if (manager.checkKey(userName, passWord) == STAFF) {
             indexStaff = manager.findIndexByAccount(userName, passWord)
             startStaff()
-        } else {
+        } else if (manager.checkKey(userName, passWord) == USER) {
+            checkId = manager.findIdByAccount(userName, passWord)
             indexTempClient = manager.findIndexByAccount(userName, passWord)
             indexClient = manager.findIndex(userName, passWord)
             isStatusUpgrade = manager.listMember[indexClient].checkUpGrade
             isGateCoach = manager.listMember[indexClient].isGateCoach
             startClient()
-        }
+        } else console.log("You do not have access")
     } else {
         console.log("Username or password is incorrect. Please try again")
         do {
@@ -130,13 +131,13 @@ function register() {
     let info = `--------------------REGISTER--------------------`
     console.log(info)
     let id = input.question("Input Id: ")
-    if (manager.checkId(id)) {
-        console.log("Id is already taken")
+    if (manager.checkId(id) || id == "" || id <= 0) {
+        console.log("Id is already taken or empty")
         register()
     } else {
         let userName = input.question("Input UserName: ")
-        if (manager.checkUserNameInput(userName)) {
-            console.log("Username is already taken")
+        if (manager.checkUserNameInput(userName) || userName == "") {
+            console.log("Username is already taken or empty")
             register()
         } else {
             let mainUser
@@ -202,8 +203,11 @@ function myProfile() {
     0. Back to menu`
     console.log(info)
     let id = +input.question("Enter Id to confirm: ")
-    let index = manager.findByIdListMember(id)
-    console.log(manager.listMember[index].showProfile())
+    if (id == checkId) {
+        let index = manager.findByIdListMember(id)
+        console.log(manager.listMember[index].showProfile())
+    } else console.log("Incorrect Id")
+
     do {
         choice = +input.question("Your select: ")
         switch (choice) {
@@ -225,11 +229,13 @@ function editMyProfile() {
     let name = input.question("Update my name: ")
     let age = Math.floor(+input.question("Update my age: "))
     let id = +input.question("Enter Id to confirm: ")
-    let index = manager.findByIdListMember(id)
-    if (index != -1) {
-        manager.listMember[index].editProfile(name, age)
-        writeData()
-    } else console.log("Id not found, please try again")
+    if (id == checkId) {
+        let index = manager.findByIdListMember(id)
+        if (index != -1) {
+            manager.listMember[index].editProfile(name, age)
+            writeData()
+        } else console.log("Id not found, please try again")
+    }
     do {
         choice = +input.question("Your select: ")
         switch (choice) {
@@ -248,9 +254,11 @@ function myWorkout() {
         let info = `--------------------MY EXERCISE--------------------
     0. Back to menu`
         console.log(info)
-        let info2 = "Name: Barbell bench press >< Set-Rep: 5x12 >< Reset: 60s\n" +
-            "Name: Barbell bench press >< Set-Rep: 5x12 >< Reset: 60s\n" +
-            "Name: Barbell bench press >< Set-Rep: 5x12 >< Reset: 60s\n"
+        let info2 = "Name: Barbell bench press >< Set-Rep: 6x10 >< Reset: 60s\n" +
+            "Name: Barbell bent-over row >< Set-Rep: 4x12 >< Reset: 60s\n" +
+            "Name: Lat pull down >< Set-Rep: 4x12 >< Reset: 60s\n" +
+            "Name: Dumbbell shoulder press >< Set-Rep: 3x12 >< Reset: 60s\n" +
+            "Name: Dumbbell bicep curl >< Set-Rep: 3x15 >< Reset: 60s\n"
         console.log(info2)
         do {
             choice = +input.question("Your select: ")
@@ -326,7 +334,7 @@ function upgradeAccount() {
     } else {
         if (isStatusUpgrade) {
             console.log(`<><><><><>Select Coach<><><><><>\n${manager.displayStaff()}`)
-            let idMember = Math.floor(+input.question("Enter My Id: "))
+            let idMember = checkId
             let idStaff = Math.floor(+input.question("Enter Coach Id: "))
             let checkGate = Math.floor(+input.question("Press 1 to confirm: "))
             if (checkGate == 1) {
@@ -338,15 +346,17 @@ function upgradeAccount() {
         } else {
             let addMonth = +input.question("Enter the number of subscription months: ")
             let idMember = Math.floor(+input.question("Enter My Id to confirm: "))
-            if (addMonth != 0) {
-                console.log(manager.tempListMember[indexTempClient].upGrade(addMonth))
-                let cost = manager.tempListMember[indexTempClient].totalCost(addMonth)
-                manager.addRevenue(cost)
-                manager.countPaidMember++
-                isStatusUpgrade = true
-                manager.isCheckGate(idMember, isStatusUpgrade, isGateCoach)
-                writeData()
-            }
+            if (idMember == checkId) {
+                if (addMonth != 0) {
+                    console.log(manager.tempListMember[indexTempClient].upGrade(addMonth))
+                    let cost = manager.tempListMember[indexTempClient].totalCost(addMonth)
+                    manager.addRevenue(cost)
+                    manager.countPaidMember++
+                    isStatusUpgrade = true
+                    manager.isCheckGate(idMember, isStatusUpgrade, isGateCoach)
+                    writeData()
+                }
+            } else console.log("Incorrect Id")
         }
         do {
             choice = +input.question("Your select: ")
@@ -432,7 +442,7 @@ function updateClientProfile() {
                 break
         }
     } while (choice != -1)
-}//done ???????????????<><><><><><><><><><><><>
+}//done<<<<<<<<<<<<<<<<<<<<<
 
 function showListClient() {
     readData()
@@ -506,6 +516,7 @@ function startManage() {
     } while (choice != -1)
 }
 
+//done
 function revenue() {
     let choice: number
     let info = `--------------------MONTHLY REVENUE--------------------
@@ -521,7 +532,8 @@ function revenue() {
                 break
         }
     } while (choice != -1)
-}//done
+}
+
 //done
 function displayStaff() {
     readData()
@@ -556,6 +568,7 @@ function displayStaff() {
         }
     } while (choice != -1)
 }
+
 //done
 function addMemberToStaff() {
     readData()
@@ -583,6 +596,7 @@ function addMemberToStaff() {
         }
     } while (choice != -1)
 }
+
 //done
 function moveClientFromStaff() {
     readData()
@@ -607,6 +621,7 @@ function moveClientFromStaff() {
         }
     } while (choice != -1)
 }
+
 //done
 function deleteStaff() {
     readData()
@@ -634,6 +649,7 @@ function deleteStaff() {
         }
     } while (choice != -1)
 }
+
 //done
 function deleteMember() {
     readData()
@@ -664,47 +680,4 @@ function deleteMember() {
 
 start()
 
-
-// manager.addMemberToStaff(1, 10)
-// manager.addMemberToStaff(2, 10)
-// manager.addMemberToStaff(3, 10)
-// manager.addMemberToStaff(4, 10)
-// writeData()
-// readData()
-// console.log(manager.listStaffs[0].displayListClient())
-// let a = input.question("member ")
-// let b = input.question("staff ")
-// manager.moveMemberFromListStaff(a, b)
-// writeData()
-// console.log("__________________")
-// readData()
-// console.log(manager.listStaffs[0].displayListClient())
-// let c = input.question("member ")
-// let d = input.question("staff ")
-// manager.moveMemberFromListStaff(c, d)
-// writeData()
-// console.log("__________________")
-// readData()
-// console.log(manager.listStaffs[0].displayListClient())
-// let e = input.question("member ")
-// let f = input.question("staff ")
-// manager.moveMemberFromListStaff(e,f)
-// writeData()
-// console.log("__________________")
-// readData()
-// console.log(manager.listStaffs[0].displayListClient())
-// let g = input.question("member ")
-// let h = input.question("staff ")
-// manager.moveMemberFromListStaff(g,h)
-// writeData()
-// console.log("__________________")
-// readData()
-// console.log(manager.listStaffs[0].displayListClient())
-// let i = input.question("member ")
-// let k = input.question("staff ")
-// manager.moveMemberFromListStaff(i,k)
-// writeData()
-// console.log("__________________")
-// readData()
-// console.log(manager.listStaffs[0].displayListClient())
 
